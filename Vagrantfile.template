@@ -1,28 +1,38 @@
 Vagrant.configure(2) do |config|
 
-    # disable mounting of vagrant folder as its not supported on xenserver
-    config.vm.synced_folder ".", "/vagrant", disabled: true
+    config.vm.synced_folder ".", "/vagrant", type: "nfs"
 
     # disable checking for vbguest versions as its not supported on xenserver
     if Vagrant.has_plugin?("vagrant-vbguest")
       config.vbguest.auto_update = false
     end
 
-    config.vm.network :private_network, :auto_config => false , :ip => "192.168.56.10"
-    config.vm.provision "shell", inline: $network_setup
+    config.vm.network "private_network", ip: "172.17.10.13",
+      auto_config:true
+    config.vm.network "private_network", ip: "192.168.100.13",
+      auto_config:true
+    #config.vm.provision "shell", inline: $network_setup
 
     config.vm.provider "virtualbox" do |v|
-      v.customize ["modifyvm", :id, "--memory", 2048]
-      v.customize [ "modifyvm", :id, "--nicpromisc2", "allow-all" ]
+      v.customize ["modifyvm", :id, "--memory", 4096]
+      v.customize ["modifyvm", :id, "--nicpromisc3", "allow-all"]
     end
 
 end
 
 $network_setup = <<END_NETWORK
-hostuuid=\`xe host-list --minimal\`
-managementuuid=\`xe pif-introduce device=eth1 host-uuid=\$hostuuid\`
+. /etc/xensource-inventory
+xe pif-scan host-uuid=${INSTALLATION_UUID}
+PIF=$(xe pif-list device=eth0 params=uuid --minimal)
+xe pif-reconfigure-ip uuid=${PIF} mode=dhcp
+xe pif-plug uuid=${PIF}
+PIF=$(xe pif-list device=eth1 params=uuid --minimal)
+xe pif-reconfigure-ip uuid=${PIF} mode=static IP=172.17.10.13 netmask=255.255.255.0
+xe pif-plug uuid=${PIF}
+PIF=$(xe pif-list device=eth2 params=uuid --minimal)
+xe pif-reconfigure-ip uuid=${PIF} mode=static IP=192.168.100.13 netmask=255.255.255.0
+xe pif-plug uuid=${PIF}
 
-xe pif-reconfigure-ip uuid=\$managementuuid mode=static IP=192.168.56.10 netmask=255.255.255.0
-
-xe host-management-reconfigure pif-uuid=\$managementuuid
+# Use one of the host-visible NICs as the management interface
+xe host-management-reconfigure pif-uuid=${PIF}
 END_NETWORK
