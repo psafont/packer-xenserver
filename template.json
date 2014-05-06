@@ -6,6 +6,7 @@
         "scripts/vagrant.sh",
 	"scripts/base.sh",
         "scripts/libvirt.sh",
+        "scripts/cloudstack.sh",
         "scripts/cleanup.sh",
         "scripts/zerodisk.sh"
       ]
