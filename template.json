@@ -1,12 +1,20 @@
 {
     "provisioners": [
         {
+            "type": "file",
+            "source": "scripts/veryfirstboot",
+            "destination": "/tmp/veryfirstboot"
+        },
+        {
+            "type": "file",
+            "source": "scripts/chroot_script.sh",
+            "destination": "/tmp/chroot_script.sh"
+        },
+        {
             "type": "shell",
             "scripts": [
-                "scripts/vagrant.sh",
-		"scripts/reboot.sh",
-		"scripts/cleanup.sh",
-                "scripts/zerodisk.sh"
+                "scripts/wait_for_installer.sh",
+                "scripts/run_in_chroot.sh"
             ]
         }
     ],
@@ -18,7 +26,7 @@
                 "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
                 "<wait>",
                 "answerfile=http://{{ .HTTPIP }}:{{ .HTTPPort }}/answerfile install ",
-                "--- /install.img<enter>"
+                "sshpassword=password atexit=shell --- /install.img<enter>"
             ],
             "boot_wait": "5s",
             "guest_additions_mode": "disable",
@@ -27,9 +35,8 @@
             "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
             "guest_os_type": "RedHat_64",
             "http_directory": "http",
-            "iso_checksum": "b6a5ce472a0010f5847669e624f06326",
-            "iso_checksum_type": "md5",
-            "iso_url": "http://downloadns.citrix.com.edgesuite.net/akdlm/10175/XenServer-6.5.0-xenserver.org-install-cd.iso",
+            "iso_checksum_type": "none",
+            "iso_url": "file:///home/jludlam/main.iso",
             "shutdown_command": "/sbin/shutdown -hP now",
             "ssh_password": "password",
             "ssh_port": 22,
@@ -53,30 +60,32 @@
                 "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
                 "<wait>",
                 "answerfile=http://{{ .HTTPIP }}:{{ .HTTPPort }}/answerfile install ",
-                "--- /install.img<enter>"
+                "sshpassword=password atexit=shell --- /install.img<enter>"
             ],
             "boot_wait": "3s",
             "disk_size": 51200,
+            "format":"vdi_vhd",
             "http_directory": "http",
  	    "http_port_min": 8080,
 	    "http_port_max": 8080,
-            "iso_checksum": "b6a5ce472a0010f5847669e624f06326",
+            "iso_checksum": "d7564067f5593d48dbf84776b1ae3de4",
             "iso_checksum_type": "md5",
-            "iso_url": "http://downloadns.citrix.com.edgesuite.net/akdlm/10175/XenServer-6.5.0-xenserver.org-install-cd.iso",
-            "shutdown_command": "/sbin/shutdown -hP now",
+            "iso_url": "file:///home/jludlam/main.iso",
+            "shutdown_command": "/sbin/shutdown -hP now > /dev/null &",
             "ssh_password": "password",
             "ssh_port": 22,
             "ssh_username": "root",
             "ssh_wait_timeout": "10000s",
             "vm_name": "XenServer"
-        }
-    ],
-    "post-processors": [
-        {
-            "compression_level": 9,
-            "output": "XenServer.box",
-            "type": "vagrant",
-            "vagrantfile_template": "Vagrantfile.template"
+        },
+	{
+	    "type": "virtualbox-ovf",
+            "source_path": "output-virtualbox-iso/XenServer.ovf",
+	    "ssh_password": "password",
+            "ssh_port": 22,
+            "ssh_username": "root",
+            "ssh_wait_timeout": "10000s"
+
         }
     ]
 }

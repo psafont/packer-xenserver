@@ -1,0 +1,19 @@
+#!/bin/bash
+
+mount /dev/sda1 /mnt
+
+ln -s ../init.d/veryfirstboot /mnt/etc/rc3.d/S03veryfirstboot
+
+# Put some things into the chroot
+wget --no-check-certificate 'https://raw.github.com/mitchellh/vagrant/master/keys/vagrant.pub' -O /tmp/vagrant.pub
+cp /tmp/chroot_script.sh /mnt/tmp/
+cp /tmp/vagrant.pub /mnt/tmp/
+
+# Now run a script within the chroot
+chmod 755 /mnt/tmp/chroot_script.sh
+cp /tmp/veryfirstboot /mnt/etc/init.d/veryfirstboot
+chroot /mnt /tmp/chroot_script.sh
+
+# Clean up
+umount /mnt
+
