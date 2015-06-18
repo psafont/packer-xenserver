@@ -1,0 +1,90 @@
+{
+    "provisioners": [
+        {
+            "type": "file",
+            "source": "scripts/veryfirstboot",
+            "destination": "/tmp/veryfirstboot"
+        },
+        {
+            "type": "file",
+            "source": "scripts/chroot_script_base.sh",
+            "destination": "/tmp/chroot_script_base.sh"
+        },
+        {
+            "type": "file",
+            "source": "scripts/chroot_script_public.sh",
+            "destination": "/tmp/chroot_script_public.sh"
+        },
+        {
+            "type": "file",
+            "source": "scripts/dhcp-everything",
+            "destination": "/tmp/dhcp-everything"
+        },
+        {
+	    "type": "file",
+            "source": "scripts/install_dhcp_everything.sh",
+            "destination": "/tmp/install_dhcp_everything.sh"
+        },
+        {
+            "type": "shell",
+            "scripts": [
+                "scripts/wait_for_installer.sh",
+                "scripts/run_in_chroot.sh",
+		"scripts/install_dhcp_everything.sh"
+            ]
+        }
+    ],
+    "builders": [
+        {
+            "boot_command": [
+                "<wait>menu.c32",
+                "<enter><wait><tab>",
+                "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+                "<wait>",
+                "answerfile=http://{{ .HTTPIP }}:{{ .HTTPPort }}/answerfile install ",
+                "sshpassword=password atexit=shell --- /install.img<enter>"
+            ],
+            "boot_wait": "5s",
+            "guest_additions_mode": "disable",
+            "headless": false,
+            "disk_size": 102400,
+            "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
+            "guest_os_type": "RedHat_64",
+            "http_directory": "http",
+            "iso_checksum_type": "sha256",
+            "iso_checksum": "5dccec51b810e90ae7d8ce433b43050f5355f69da3183d4a1687cde539647224",
+            "iso_url": "http://downloadns.citrix.com.edgesuite.net/10759/XenServer-6.6.91-install-cd.iso",
+            "shutdown_command": "/sbin/shutdown -hP now",
+            "ssh_password": "password",
+            "ssh_port": 22,
+            "ssh_username": "root",
+            "ssh_wait_timeout": "10000s",
+            "type": "virtualbox-iso",
+            "vm_name": "XenServer",
+            "vboxmanage": [
+                ["modifyvm", "{{.Name}}", "--memory", "2048"],
+                ["modifyvm", "{{.Name}}", "--cpus", "1"]
+            ]
+        }
+    ],
+    "post-processors": [
+         [{
+	    "only": ["virtualbox-iso"],
+            "compression_level": 9,
+            "output": "XenServer.box",
+            "type": "vagrant",
+            "vagrantfile_template": "Vagrantfile.template"
+        },
+        {
+	    "only": ["virtualbox-iso"],
+            "type": "atlas",
+            "artifact": "xenserver/dundee-beta",
+            "artifact_type": "vagrant.box",
+            "metadata": {
+              "provider":"virtualbox",
+              "version":"6.6.91.1",
+              "created_at": "{{timestamp}}"
+            }
+        }]
+    ]
+}
