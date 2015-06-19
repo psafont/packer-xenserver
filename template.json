@@ -3,7 +3,7 @@
         "branch": "",
         "version": "",
         "xshost": "",
-        "xspassword": ""
+        "xspassword": "",
         "outputdir": "/tmp/"
     },
     "provisioners": [
