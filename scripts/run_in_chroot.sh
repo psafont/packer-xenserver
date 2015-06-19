@@ -12,6 +12,8 @@ cp /tmp/vagrant.pub /mnt/tmp/
 # Now run a script within the chroot
 chmod 755 /mnt/tmp/chroot_script.sh
 cp /tmp/veryfirstboot /mnt/etc/init.d/veryfirstboot
+chmod 755 /mnt/etc/init.d/veryfirstboot#
+ln -s ../init.d/veryfirstboot /mnt/etc/rc3.d/S03veryfirstboot
 chroot /mnt /tmp/chroot_script.sh
 
 # Clean up
