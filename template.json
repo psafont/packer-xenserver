@@ -4,6 +4,7 @@
         "version": "",
         "xshost": "",
         "xspassword": ""
+        "outputdir": "/tmp/"
     },
     "provisioners": [
         {
@@ -76,6 +77,7 @@
 	    "http_port_max": 2376,
             "iso_checksum_type": "none",
             "iso_url": "http://coltrane.uk.xensource.com/usr/groups/build/{{user `branch`}}/{{user `version`}}/xe-phase-1/main.iso",
+            "output_directory": "{{user `outputdir`}}",
             "shutdown_command": "/sbin/shutdown -hP now > /dev/null &",
             "ssh_password": "password",
             "ssh_port": 22,
