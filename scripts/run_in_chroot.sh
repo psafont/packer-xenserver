@@ -16,6 +16,9 @@ chmod 755 /mnt/etc/init.d/veryfirstboot
 ln -s ../init.d/veryfirstboot /mnt/etc/rc3.d/S03veryfirstboot
 chroot /mnt /tmp/chroot_script.sh
 
+echo "UseDNS no" >> /mnt/etc/ssh/sshd_config  # Disable DNS lookups
+echo "GSSAPIAuthentication no" >> /mnt/etc/ssh/sshd_config # Disable negotation of slow GSSAPI
+
 # Clean up
 umount /mnt
 
