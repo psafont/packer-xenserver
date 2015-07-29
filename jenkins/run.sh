@@ -52,7 +52,16 @@ cat > $resultdir/$branch/$branch.json <<EOF
 }
 EOF
 
-jenkins/create-vagrantcloud-box.sh xs-$branch $apikey
-jenkins/update-vagrantcloud-box.sh xs-$branch 0.0.$VERSION http://xen-git.uk.xensource.com/vagrant/$branch/$branch.$VERSION.box $apikey
+if [ "$branch" = "trunk-thin-lvhd-2" ]; then
+  boxname=xs-thin-lvhd
+else
+  boxname=xs-$branch
+fi
+
+echo boxname=$boxname
+
+
+jenkins/create-vagrantcloud-box.sh $boxname $apikey
+jenkins/update-vagrantcloud-box.sh $boxname 0.0.$VERSION http://xen-git.uk.xensource.com/vagrant/$branch/$branch.$VERSION.box $apikey
 
 
