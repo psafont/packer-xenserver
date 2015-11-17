@@ -38,7 +38,7 @@
             "boot_wait": "5s",
             "guest_additions_mode": "disable",
             "headless": false,
-            "disk_size": 51200,
+            "disk_size": 102400,
             "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
             "guest_os_type": "RedHat_64",
             "http_directory": "http",
