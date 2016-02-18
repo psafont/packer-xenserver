@@ -12,7 +12,7 @@ export PATH=/local/bigdisc/packer-bin:$PATH
 
 boxbasedir=/usr/local/builds/vagrant
 resultdir=/local/bigdisc/vagrant
-VERSION=`readlink /misc/scratch/carbon/$branch/latest`
+VERSION=`readlink /usr/groups/build/$branch/latest`
 
 # Make a tmp dir to construct the box
 boxdir=$boxbasedir/tmp-$branch
