@@ -17,5 +17,5 @@ for i in /etc/yum.repos.d/*; do
   sudo mv /tmp/$base /etc/yum.repos.d/
 done
 
-sudo rm /etc/yum.repos.d/Citrix.repo
+sudo rm -f /etc/yum.repos.d/Citrix.repo
 
