@@ -52,8 +52,8 @@
             "guest_os_type": "RedHat_64",
             "http_directory": "http",
             "iso_checksum_type": "sha256",
-            "iso_checksum": "5dccec51b810e90ae7d8ce433b43050f5355f69da3183d4a1687cde539647224",
-            "iso_url": "http://downloadns.citrix.com.edgesuite.net/10759/XenServer-6.6.91-install-cd.iso",
+	    "iso_checksum":"ffc14653d16cd2f856b8b58d500b215f89e7c1a0e03891c2a37b9083c3c45fe1",
+            "iso_url": "http://downloadns.citrix.com.edgesuite.net/11437/XenServer-6.6.92-main.iso",
             "shutdown_command": "/sbin/shutdown -hP now",
             "ssh_password": "password",
             "ssh_port": 22,
@@ -82,7 +82,7 @@
             "artifact_type": "vagrant.box",
             "metadata": {
               "provider":"virtualbox",
-              "version":"6.6.91.1",
+              "version":"6.6.92.1",
               "created_at": "{{timestamp}}"
             }
         }]
