@@ -1,4 +1,9 @@
 #!/bin/bash
+#
+# DHCP everything          DHCP all of the interfaces
+#
+# chkconfig: 2345 99 99
+# description: DHCP all of the interfaces
 
 stamp=/var/lib/xcp/verylast
 
