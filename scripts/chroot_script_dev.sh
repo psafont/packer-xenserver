@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for i in xapi xenopsd xenopsd-xl xenopsd-xc xcp-rrdd-plugins xcp-rrdd xcp-networkd xapi-domains squeezed firstboot forkexecd genptoken perfmon; do
+for i in xapi xenopsd xenopsd-xl xenopsd-xc xcp-rrdd-plugins xcp-rrdd xcp-networkd xapi-domains squeezed xs-firstboot forkexecd genptoken perfmon xsconsole; do
   chkconfig $i off || true
   service $i stop || true
 done
