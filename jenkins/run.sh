@@ -21,10 +21,17 @@ rm -rf $boxdir
 mkdir -p $boxdir
 packer build -only=xenserver-iso -var "branch=$branch" -var "xshost=$server" -var "xspassword=$password" -var "outputdir=$boxdir" -var "version=$VERSION" internal/template-dev.json
 rm -rf packer_cache/*
-mv $boxdir/*.vhd $boxdir/box.vhd
-echo "{\"provider\": \"xenserver\"}" > $boxdir/metadata.json
-cd $boxdir
+mv $boxdir/*.xva $resultdir/$branch/$branch.$VERSION.xva
 mkdir -p $resultdir/$branch
+echo "{\"provider\": \"xenserver\"}" > $boxdir/metadata.json
+cat > $boxdir/Vagrantfile << EOF
+Vagrant.configure(2) do |config|
+  config.vm.provider :xenserver do |xs|
+    xs.xva_url = "http://xen-git.uk.xensource.com/vagrant/$branch/$branch.$VERSION.xva"
+  end
+end
+EOF
+cd $boxdir
 tar zcf $resultdir/$branch/$branch.$VERSION.box .
 cd -
 

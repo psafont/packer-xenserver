@@ -87,7 +87,7 @@
             ],
             "boot_wait": "3s",
             "disk_size": 51200,
-            "format":"vdi_vhd",
+            "format":"xva",
             "http_directory": "http",
  	    "http_port_min": 2375,
 	    "http_port_max": 2376,
