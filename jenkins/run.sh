@@ -21,6 +21,7 @@ rm -rf $boxdir
 mkdir -p $boxdir
 packer build -only=xenserver-iso -var "branch=$branch" -var "xshost=$server" -var "xspassword=$password" -var "outputdir=$boxdir" -var "version=$VERSION" internal/template-dev.json
 rm -rf packer_cache/*
+mkdir -p $resultdir/$branch
 mv $boxdir/*.xva $resultdir/$branch/$branch.$VERSION.xva
 mkdir -p $resultdir/$branch
 echo "{\"provider\": \"xenserver\"}" > $boxdir/metadata.json
