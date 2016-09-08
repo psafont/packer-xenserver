@@ -9,7 +9,7 @@ password=$3
 transformer=$4
 apikey=$5
 
-if [ $transformer -eq "true" ]; then
+if [ "$transformer" == "true" ]; then
     isopath="xe-phase-transformer/main-transformer.iso";
 else
     isopath="xe-phase-1/main.iso"
@@ -24,7 +24,7 @@ VERSION=`readlink /usr/groups/build/$branch/latest`
 # Make a tmp dir to construct the box
 boxdir=$boxbasedir/tmp-$branch
 
-if [ $transformer -eq "true" ]; then
+if [ "$transformer" == "true" ]; then
 	xva=$branch.t.$VERSION.xva
 else
 	xva=$branch.$VERSION.xva
@@ -73,7 +73,7 @@ cat > $resultdir/$branch/$branch.json <<EOF
 }
 EOF
 
-if [ $transformer -eq "true" ]; then
+if [ "$transformer" == "true" ]; then
 	boxname=xs-$branch
 else
         boxname=xs-transformer-$branch
