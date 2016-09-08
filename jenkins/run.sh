@@ -76,9 +76,9 @@ cat > $resultdir/$branch/$branch.json <<EOF
 EOF
 
 if [ "$transformer" == "true" ]; then
-	boxname=xs-$branch
+	boxname=xs-transformer-$branch
 else
-        boxname=xs-transformer-$branch
+        boxname=xs-$branch
 fi
 
 echo boxname=$boxname
