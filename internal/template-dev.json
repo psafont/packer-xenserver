@@ -93,7 +93,7 @@
  	    "http_port_min": 2375,
 	    "http_port_max": 2376,
             "iso_checksum_type": "none",
-            "iso_url": "http://coltrane.uk.xensource.com/usr/groups/build/{{user `branch`}}/{{user `version`}}/xe-phase-1/main.iso",
+            "iso_url": "http://coltrane.uk.xensource.com/usr/groups/build/{{user `branch`}}/{{user `version`}}/{{user `isopath`}}",
             "output_directory": "{{user `outputdir`}}",
             "shutdown_command": "/sbin/shutdown -hP now > /dev/null &",
             "ssh_password": "password",
