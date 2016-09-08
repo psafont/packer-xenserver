@@ -6,7 +6,14 @@ set -e
 branch=$1
 server=$2
 password=$3
-apikey=$4
+transformer=$4
+apikey=$5
+
+if [ $transformer -eq "true" ]; then
+    isopath="xe-phase-transformer/main-transformer.iso";
+else
+    isopath="xe-phase-1/main.iso"
+fi
 
 export PATH=/local/bigdisc/packer-bin:$PATH
 
@@ -19,7 +26,7 @@ boxdir=$boxbasedir/tmp-$branch
 
 rm -rf $boxdir
 mkdir -p $boxdir
-packer build -only=xenserver-iso -var "branch=$branch" -var "xshost=$server" -var "xspassword=$password" -var "outputdir=$boxdir" -var "version=$VERSION" internal/template-dev.json
+packer build -only=xenserver-iso -var "branch=$branch" -var "xshost=$server" -var "xspassword=$password" -var "outputdir=$boxdir" -var "version=$VERSION" -var "isopath=$isopath" internal/template-dev.json
 rm -rf packer_cache/*
 mkdir -p $resultdir/$branch
 mv $boxdir/*.xva $resultdir/$branch/$branch.$VERSION.xva

@@ -2,6 +2,7 @@
     "variables": { 
         "branch": "trunk",
         "version": "latest",
+	"isopath": "xe-phase-1/main.iso",
         "xshost": "",
         "xspassword": "",
         "outputdir": "/tmp/"
@@ -59,7 +60,7 @@
             "guest_os_type": "RedHat_64",
             "http_directory": "http",
             "iso_checksum_type": "none",
-            "iso_url": "http://coltrane.uk.xensource.com/usr/groups/build/{{user `branch`}}/{{user `version`}}/xe-phase-1/main.iso",
+            "iso_url": "http://coltrane.uk.xensource.com/usr/groups/build/{{user `branch`}}/{{user `version`}}/{{user `isopath`}}",
             "shutdown_command": "/sbin/shutdown -hP now",
             "ssh_password": "password",
             "ssh_port": 22,
