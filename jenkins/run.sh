@@ -26,8 +26,10 @@ boxdir=$boxbasedir/tmp-$branch
 
 if [ "$transformer" == "true" ]; then
 	xva=$branch.t.$VERSION.xva
+	boxfile=$branch.t.$VERSION.box
 else
 	xva=$branch.$VERSION.xva
+	boxfile=$branch.$VERSION.box
 fi
 
 rm -rf $boxdir
@@ -46,7 +48,7 @@ Vagrant.configure(2) do |config|
 end
 EOF
 cd $boxdir
-tar zcf $resultdir/$branch/$branch.$VERSION.box .
+tar zcf $resultdir/$branch/$boxfile .
 cd -
 
 rm -rf $boxdir
@@ -55,17 +57,17 @@ pushd $resultdir/$branch
 (ls -t|head -n 2;ls)|sort|uniq -u|xargs rm -f
 popd
 
-SHA=`sha1sum $resultdir/$branch/$branch.$VERSION.box | cut -d\  -f1`
+SHA=`sha1sum $resultdir/$branch/$boxfile | cut -d\  -f1`
 
 cat > $resultdir/$branch/$branch.json <<EOF
 {
   "name": "xenserver/$branch",
-  "description": "This box contains XenServer installed from branch $branch",
+  "description": "This box contains XenServer installed from branch $branch (transformer=$transformer)",
   "versions": [{
     "version": "0.0.$VERSION",
     "providers": [{
       "name": "xenserver",
-      "url": "http://xen-git.uk.xensource.com/vagrant/$branch/$branch.$VERSION.box",
+      "url": "http://xen-git.uk.xensource.com/vagrant/$branch/$boxfile",
       "checksum_type": "sha1",
       "checksum": "$SHA"
     }]
@@ -83,6 +85,6 @@ echo boxname=$boxname
 
 
 jenkins/create-vagrantcloud-box.sh $boxname $apikey
-jenkins/update-vagrantcloud-box.sh $boxname 0.0.$VERSION http://xen-git.uk.xensource.com/vagrant/$branch/$branch.$VERSION.box $apikey
+jenkins/update-vagrantcloud-box.sh $boxname 0.0.$VERSION http://xen-git.uk.xensource.com/vagrant/$branch/$boxfile $apikey
 
 
