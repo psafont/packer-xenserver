@@ -10,7 +10,7 @@ transformer=$4
 apikey=$5
 
 if [ "$transformer" == "true" ]; then
-    isopath="xe-phase-transformer/main-transformer.iso";
+    isopath="xe-phase-transformer/main_transformer.iso";
 else
     isopath="xe-phase-1/main.iso"
 fi
