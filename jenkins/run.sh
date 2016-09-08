@@ -24,18 +24,24 @@ VERSION=`readlink /usr/groups/build/$branch/latest`
 # Make a tmp dir to construct the box
 boxdir=$boxbasedir/tmp-$branch
 
+if [ $transformer -eq "true" ]; then
+	xva=$branch.t.$VERSION.xva
+else
+	xva=$branch.$VERSION.xva
+fi
+
 rm -rf $boxdir
 mkdir -p $boxdir
 packer build -only=xenserver-iso -var "branch=$branch" -var "xshost=$server" -var "xspassword=$password" -var "outputdir=$boxdir" -var "version=$VERSION" -var "isopath=$isopath" internal/template-dev.json
 rm -rf packer_cache/*
 mkdir -p $resultdir/$branch
-mv $boxdir/*.xva $resultdir/$branch/$branch.$VERSION.xva
+mv $boxdir/*.xva $resultdir/$branch/$xva
 mkdir -p $resultdir/$branch
 echo "{\"provider\": \"xenserver\"}" > $boxdir/metadata.json
 cat > $boxdir/Vagrantfile << EOF
 Vagrant.configure(2) do |config|
   config.vm.provider :xenserver do |xs|
-    xs.xva_url = "http://xen-git.uk.xensource.com/vagrant/$branch/$branch.$VERSION.xva"
+    xs.xva_url = "http://xen-git.uk.xensource.com/vagrant/$branch/$xva"
   end
 end
 EOF
@@ -67,7 +73,11 @@ cat > $resultdir/$branch/$branch.json <<EOF
 }
 EOF
 
-boxname=xs-$branch
+if [ $transformer -eq "true" ]; then
+	boxname=xs-$branch
+else
+        boxname=xs-transformer-$branch
+fi
 
 echo boxname=$boxname
 
