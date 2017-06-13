@@ -22,57 +22,52 @@ VERSION=`curl "https://ratchet.do.citrite.net/job/xenserver-specs/job/$escapedbr
 echo branch=$branch
 echo VERSION=$VERSION
 # Make a tmp dir to construct the box
-boxdir=$boxbasedir/tmp-$branch
+boxdir=$boxbasedir/tmp-$vagrantboxname
 
-xva=$branch.$VERSION.xva
-boxfile=$branch.$VERSION.box
+xva=$vagrantboxname.$VERSION.xva
+boxfile=$vagrantboxname.$VERSION.box
 
 rm -rf $boxdir
 mkdir -p $boxdir
 packer build -only=xenserver-iso -var "artifactory=$artifactory" -var "branch=$branch" -var "xshost=$server" -var "xspassword=$password" -var "outputdir=$boxdir" -var "version=$VERSION" internal/template-dev.json
 rm -rf packer_cache/*
-mkdir -p $resultdir/$branch
-mv $boxdir/*.xva $resultdir/$branch/$xva
-mkdir -p $resultdir/$branch
+mkdir -p $resultdir/$vagrantboxname
+mv $boxdir/*.xva $resultdir/$vagrantboxname/$xva
 echo "{\"provider\": \"xenserver\"}" > $boxdir/metadata.json
 cat > $boxdir/Vagrantfile << EOF
 Vagrant.configure(2) do |config|
   config.vm.provider :xenserver do |xs|
-    xs.xva_url = "http://xen-git.uk.xensource.com/vagrant/$branch/$xva"
+    xs.xva_url = "http://xen-git.uk.xensource.com/vagrant/$vagrantboxname/$xva"
   end
 end
 EOF
 cd $boxdir
-tar zcf $resultdir/$branch/$boxfile .
+tar zcf $resultdir/$vagrantboxname/$boxfile .
 cd -
 
 rm -rf $boxdir
 
-pushd $resultdir/$branch
+pushd $resultdir/$vagrantboxname
 (ls -t|head -n 2;ls)|sort|uniq -u|xargs rm -f
 popd
 
-SHA=`sha1sum $resultdir/$branch/$boxfile | cut -d\  -f1`
+SHA=`sha1sum $resultdir/$vagrantboxname/$boxfile | cut -d\  -f1`
 
-cat > $resultdir/$branch/$branch.json <<EOF
+cat > $resultdir/$vagrantboxname/$branch.json <<EOF
 {
-  "name": "xenserver/$branch",
+  "name": "xenserver/$vagrantboxname",
   "description": "This box contains XenServer installed from branch $branch",
   "versions": [{
     "version": "0.0.$VERSION",
     "providers": [{
       "name": "xenserver",
-      "url": "http://xen-git.uk.xensource.com/vagrant/$branch/$boxfile",
+      "url": "http://xen-git.uk.xensource.com/vagrant/$vagrantboxname/$boxfile",
       "checksum_type": "sha1",
       "checksum": "$SHA"
     }]
   }]
 }
 EOF
-
-boxname=xs-$branch
-
-echo boxname=$boxname
 
 jenkins/create-vagrantcloud-box.sh $vagrantboxname $apikey
 jenkins/update-vagrantcloud-box.sh $vagrantboxname 0.0.$VERSION http://xen-git.uk.xensource.com/vagrant/$branch/$boxfile $apikey
