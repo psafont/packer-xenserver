@@ -6,35 +6,28 @@ set -e
 branch=$1
 server=$2
 password=$3
-transformer=$4
-apikey=$5
-
-if [ "$transformer" == "true" ]; then
-    isopath="xe-phase-transformer/main_transformer.iso";
-else
-    isopath="xe-phase-1/main.iso"
-fi
+apikey=$4
 
 export PATH=/local/bigdisc/packer-bin:$PATH
 
 boxbasedir=/usr/local/builds/vagrant
 resultdir=/local/bigdisc/vagrant
-VERSION=`readlink /usr/groups/build/$branch/latest`
 
+escapedbranch=`echo $branch | sed sx/x%252Fxg`
+
+VERSION=`curl "https://ratchet.do.citrite.net/job/xenserver-specs/job/$escapedbranch/api/json" | jq .lastSuccessfulBuild.number`
+
+echo branch=$branch
+echo VERSION=$VERSION
 # Make a tmp dir to construct the box
 boxdir=$boxbasedir/tmp-$branch
 
-if [ "$transformer" == "true" ]; then
-	xva=$branch.t.$VERSION.xva
-	boxfile=$branch.t.$VERSION.box
-else
-	xva=$branch.$VERSION.xva
-	boxfile=$branch.$VERSION.box
-fi
+xva=$branch.$VERSION.xva
+boxfile=$branch.$VERSION.box
 
 rm -rf $boxdir
 mkdir -p $boxdir
-packer build -only=xenserver-iso -var "branch=$branch" -var "xshost=$server" -var "xspassword=$password" -var "outputdir=$boxdir" -var "version=$VERSION" -var "isopath=$isopath" internal/template-dev.json
+packer build -only=xenserver-iso -var "branch=$branch" -var "xshost=$server" -var "xspassword=$password" -var "outputdir=$boxdir" -var "version=$VERSION" internal/template-dev.json
 rm -rf packer_cache/*
 mkdir -p $resultdir/$branch
 mv $boxdir/*.xva $resultdir/$branch/$xva
@@ -62,7 +55,7 @@ SHA=`sha1sum $resultdir/$branch/$boxfile | cut -d\  -f1`
 cat > $resultdir/$branch/$branch.json <<EOF
 {
   "name": "xenserver/$branch",
-  "description": "This box contains XenServer installed from branch $branch (transformer=$transformer)",
+  "description": "This box contains XenServer installed from branch $branch",
   "versions": [{
     "version": "0.0.$VERSION",
     "providers": [{
@@ -75,14 +68,9 @@ cat > $resultdir/$branch/$branch.json <<EOF
 }
 EOF
 
-if [ "$transformer" == "true" ]; then
-	boxname=xs-transformer-$branch
-else
-        boxname=xs-$branch
-fi
+boxname=xs-$branch
 
 echo boxname=$boxname
-
 
 jenkins/create-vagrantcloud-box.sh $boxname $apikey
 jenkins/update-vagrantcloud-box.sh $boxname 0.0.$VERSION http://xen-git.uk.xensource.com/vagrant/$branch/$boxfile $apikey
