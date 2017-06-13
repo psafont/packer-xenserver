@@ -7,6 +7,7 @@ branch=$1
 server=$2
 password=$3
 apikey=$4
+artifactory=$5
 
 export PATH=/local/bigdisc/packer-bin:$PATH
 
@@ -14,6 +15,7 @@ boxbasedir=/usr/local/builds/vagrant
 resultdir=/local/bigdisc/vagrant
 
 escapedbranch=`echo $branch | sed sx/x%252Fxg`
+vagrantboxname=`echo $branch | sed sx/x-xg`
 
 VERSION=`curl "https://ratchet.do.citrite.net/job/xenserver-specs/job/$escapedbranch/api/json" | jq .lastSuccessfulBuild.number`
 
@@ -27,7 +29,7 @@ boxfile=$branch.$VERSION.box
 
 rm -rf $boxdir
 mkdir -p $boxdir
-packer build -only=xenserver-iso -var "branch=$branch" -var "xshost=$server" -var "xspassword=$password" -var "outputdir=$boxdir" -var "version=$VERSION" internal/template-dev.json
+packer build -only=xenserver-iso -var "artifactory=$artifactory" -var "branch=$branch" -var "xshost=$server" -var "xspassword=$password" -var "outputdir=$boxdir" -var "version=$VERSION" internal/template-dev.json
 rm -rf packer_cache/*
 mkdir -p $resultdir/$branch
 mv $boxdir/*.xva $resultdir/$branch/$xva
@@ -72,7 +74,7 @@ boxname=xs-$branch
 
 echo boxname=$boxname
 
-jenkins/create-vagrantcloud-box.sh $boxname $apikey
-jenkins/update-vagrantcloud-box.sh $boxname 0.0.$VERSION http://xen-git.uk.xensource.com/vagrant/$branch/$boxfile $apikey
+jenkins/create-vagrantcloud-box.sh $vagrantboxname $apikey
+jenkins/update-vagrantcloud-box.sh $vagrantboxname 0.0.$VERSION http://xen-git.uk.xensource.com/vagrant/$branch/$boxfile $apikey
 
 
