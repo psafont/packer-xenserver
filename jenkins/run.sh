@@ -19,6 +19,12 @@ vagrantboxname=`echo $branch | sed sx/x-xg`
 
 VERSION=`curl "https://ratchet.do.citrite.net/job/xenserver-specs/job/$escapedbranch/api/json" | jq .lastSuccessfulBuild.number`
 
+exists=`jenkins/vagrantcloud-box-exists.sh $vagrantboxname 0.0.$VERSION $apikey`
+
+if [ $exists == "yes" ]; then
+   exit 0
+fi
+
 echo branch=$branch
 echo VERSION=$VERSION
 # Make a tmp dir to construct the box
