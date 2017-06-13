@@ -59,7 +59,7 @@ popd
 
 SHA=`sha1sum $resultdir/$vagrantboxname/$boxfile | cut -d\  -f1`
 
-cat > $resultdir/$vagrantboxname/$branch.json <<EOF
+cat > $resultdir/$vagrantboxname/$vagrantboxname.json <<EOF
 {
   "name": "xenserver/$vagrantboxname",
   "description": "This box contains XenServer installed from branch $branch",
@@ -76,6 +76,6 @@ cat > $resultdir/$vagrantboxname/$branch.json <<EOF
 EOF
 
 jenkins/create-vagrantcloud-box.sh $vagrantboxname $apikey
-jenkins/update-vagrantcloud-box.sh $vagrantboxname 0.0.$VERSION http://xen-git.uk.xensource.com/vagrant/$branch/$boxfile $apikey
+jenkins/update-vagrantcloud-box.sh $vagrantboxname 0.0.$VERSION http://xen-git.uk.xensource.com/vagrant/$vagrantboxname/$boxfile $apikey
 
 
