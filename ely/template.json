@@ -1,0 +1,116 @@
+{
+    "variables": { 
+        "version": "137272",
+        "artifactory": "artifactory.fqdn.here",
+        "xshost": "",
+        "xspassword": "",
+        "outputdir": "/tmp/",
+        "network": "Pool-wide network associated with eth0"
+    },
+    "provisioners": [
+        {
+            "type": "file",
+            "source": "scripts/veryfirstboot",
+            "destination": "/tmp/veryfirstboot"
+        },
+        {
+            "type": "file",
+            "source": "scripts/chroot_script_base.sh",
+            "destination": "/tmp/chroot_script_base.sh"
+        },
+        {
+            "type": "file",
+            "source": "scripts/chroot_script_public.sh",
+            "destination": "/tmp/chroot_script_public.sh"
+        },
+        {
+            "type": "file",
+            "source": "scripts/dhcp-everything",
+            "destination": "/tmp/dhcp-everything"
+        },
+        {
+	    "type": "file",
+            "source": "scripts/install_dhcp_everything.sh",
+            "destination": "/tmp/install_dhcp_everything.sh"
+        },
+        {
+            "type": "shell",
+            "scripts": [
+                "scripts/wait_for_installer.sh",
+                "scripts/run_in_chroot.sh",
+		"scripts/install_dhcp_everything.sh"
+            ]
+        }
+    ],
+    "builders": [
+        {
+            "boot_command": [
+                "<wait>menu.c32",
+                "<enter><wait><tab>",
+                "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+                "<wait>",
+                "answerfile=http://{{ .HTTPIP }}:{{ .HTTPPort }}/answerfile install ",
+                "sshpassword=password atexit=shell --- /install.img<enter>"
+            ],
+            "boot_wait": "5s",
+            "guest_additions_mode": "disable",
+            "headless": false,
+            "disk_size": 102400,
+            "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
+            "guest_os_type": "RedHat_64",
+            "http_directory": "http",
+            "iso_checksum_type": "none",
+            "iso_url": "https://{{user `artifactory`}}/xs-local-assembly/ely/{{user `version`}}/main.iso",
+            "shutdown_command": "/sbin/shutdown -hP now",
+            "ssh_password": "password",
+            "ssh_port": 22,
+            "ssh_username": "root",
+            "ssh_wait_timeout": "10000s",
+            "type": "virtualbox-iso",
+            "vm_name": "XenServer",
+            "vboxmanage": [
+                ["modifyvm", "{{.Name}}", "--memory", "2048"],
+                ["modifyvm", "{{.Name}}", "--cpus", "1"]
+            ]
+        },
+        {
+            "type": "xenserver-iso",
+	    "remote_host": "{{user `xshost`}}",
+	    "remote_username": "root",
+	    "remote_password": "{{user `xspassword`}}",
+            "boot_command": [
+                "<wait>menu.c32",
+                "<enter><wait><tab>",
+                "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+                "<wait>",
+                "answerfile=http://{{ .HTTPIP }}:{{ .HTTPPort }}/answerfile install ",
+                "sshpassword=password atexit=shell --- /install.img<enter>"
+            ],
+            "boot_wait": "3s",
+            "disk_size": 51200,
+            "format":"xva",
+            "http_directory": "http",
+ 	    "http_port_min": 2375,
+	    "http_port_max": 2376,
+            "network_names": ["{{user `network`}}"], 
+            "iso_checksum_type": "none",
+            "iso_url": "https://{{user `artifactory`}}/xs-local-assembly/xenserver/{{user `branch`}}/{{user `version`}}/main.iso",
+            "output_directory": "{{user `outputdir`}}",
+            "shutdown_command": "/sbin/shutdown -hP now > /dev/null &",
+            "ssh_password": "password",
+            "ssh_port": 22,
+            "ssh_username": "root",
+            "ssh_wait_timeout": "10000s",
+            "vm_name": "XenServer",
+	    "vm_memory": 4096
+	}
+    ],
+    "post-processors": [
+         {
+            "compression_level": 9,
+            "output": "XenServer.box",
+            "type": "vagrant",
+            "vagrantfile_template": "Vagrantfile.template"
+        }
+    ]
+}
