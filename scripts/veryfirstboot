@@ -16,8 +16,10 @@ if [ ! -e $stamp ]; then
    echo "INSTALLATION_UUID='$host'" >> /etc/xensource-inventory
    control=`uuidgen`
    echo "CONTROL_DOMAIN_UUID='$control'" >> /etc/xensource-inventory
+
+   echo "InitiatorName=$(/sbin/iscsi-iname)" >/etc/iscsi/initiatorname.iscsi
    
-   # Write stamp now, in case something below fails
+   # Write stamp now that everything has succeeded.
    mkdir -p $(dirname $stamp)
    touch $stamp
 fi

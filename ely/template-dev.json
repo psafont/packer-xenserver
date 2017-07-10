@@ -94,7 +94,7 @@
 	    "http_port_max": 2376,
             "network_names": ["{{user `network`}}"],
             "iso_checksum_type": "none",
-            "iso_url": "https://{{user `artifactory`}}/xs-local-assembly/xenserver/{{user `branch`}}/{{user `version`}}/main.iso",
+            "iso_url": "https://{{user `artifactory`}}/xs-local-assembly/ely/{{user `version`}}/main.iso",
             "output_directory": "{{user `outputdir`}}",
             "shutdown_command": "/sbin/shutdown -hP now > /dev/null &",
             "ssh_password": "password",

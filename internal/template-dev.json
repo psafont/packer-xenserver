@@ -102,6 +102,7 @@
             "ssh_port": 22,
             "ssh_username": "root",
             "ssh_wait_timeout": "10000s",
+	    "tools_iso_name": "guest-tools.iso",
             "vm_name": "XenServer",
 	    "vm_memory": 4096
 	}
