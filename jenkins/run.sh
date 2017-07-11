@@ -8,6 +8,7 @@ server=$2
 password=$3
 apikey=$4
 artifactory=$5
+isoname=$6
 
 export PATH=/local/bigdisc/packer-bin:$PATH
 
@@ -35,7 +36,7 @@ boxfile=$vagrantboxname.$VERSION.box
 
 rm -rf $boxdir
 mkdir -p $boxdir
-packer build -only=xenserver-iso -var "artifactory=$artifactory" -var "branch=$branch" -var "xshost=$server" -var "xspassword=$password" -var "outputdir=$boxdir" -var "version=$VERSION" internal/template-dev.json
+packer build -only=xenserver-iso -var "artifactory=$artifactory" -var "branch=$branch" -var "xshost=$server" -var "xspassword=$password" -var "outputdir=$boxdir" -var "version=$VERSION" -var "isoname=$isoname" internal/template-dev.json
 rm -rf packer_cache/*
 mkdir -p $resultdir/$vagrantboxname
 mv $boxdir/*.xva $resultdir/$vagrantboxname/$xva
