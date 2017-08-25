@@ -9,6 +9,7 @@ password=$3
 apikey=$4
 artifactory=$5
 isoname=$6
+buildoverride=$7
 
 export PATH=/local/bigdisc/packer-bin:$PATH
 
@@ -18,7 +19,13 @@ resultdir=/local/bigdisc/vagrant
 escapedbranch=`echo $branch | sed sx/x%252Fxg`
 vagrantboxname=`echo $branch | sed sx/x-xg`
 
-VERSION=`curl "https://ratchet.do.citrite.net/job/xenserver-specs/job/$escapedbranch/api/json" | jq .lastSuccessfulBuild.number`
+JVERSION=`curl "https://ratchet.do.citrite.net/job/xenserver-specs/job/$escapedbranch/api/json" | jq .lastSuccessfulBuild.number`
+
+if [ "x"$buildoverride == "x" ]; then
+	VERSION=$buildoverride
+else
+	VERSION=$JVERSION
+fi
 
 exists=`jenkins/vagrantcloud-box-exists.sh $vagrantboxname 0.0.$VERSION $apikey`
 
