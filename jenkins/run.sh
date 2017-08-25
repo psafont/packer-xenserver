@@ -21,7 +21,7 @@ vagrantboxname=`echo $branch | sed sx/x-xg`
 
 JVERSION=`curl "https://ratchet.do.citrite.net/job/xenserver-specs/job/$escapedbranch/api/json" | jq .lastSuccessfulBuild.number`
 
-if [ "x"$buildoverride == "x" ]; then
+if [ "x"$buildoverride != "x" ]; then
 	VERSION=$buildoverride
 else
 	VERSION=$JVERSION
