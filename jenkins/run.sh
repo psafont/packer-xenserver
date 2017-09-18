@@ -9,9 +9,9 @@ password=$3
 apikey=$4
 artifactory=$5
 isoname=$6
-buildoverride=$7
-bvtuser=$8
-bvtpass=$9
+bvtuser=$7
+bvtpass=$8
+buildoverride=$9
 
 export PATH=/local/bigdisc/packer-bin:$PATH
 
