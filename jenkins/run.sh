@@ -10,6 +10,8 @@ apikey=$4
 artifactory=$5
 isoname=$6
 buildoverride=$7
+bvtuser=$8
+bvtpass=$9
 
 export PATH=/local/bigdisc/packer-bin:$PATH
 
@@ -19,7 +21,7 @@ resultdir=/local/bigdisc/vagrant
 escapedbranch=`echo $branch | sed sx/x%252Fxg`
 vagrantboxname=`echo $branch | sed sx/x-xg`
 
-JVERSION=`curl "https://ratchet.do.citrite.net/job/xenserver-specs/job/$escapedbranch/api/json" | jq .lastSuccessfulBuild.number`
+JVERSION=`curl "https://$bvtuser:$bvtpass@ratchet.do.citrite.net/job/xenserver-specs/job/$escapedbranch/api/json" | jq .lastSuccessfulBuild.number`
 
 if [ "x"$buildoverride != "x" ]; then
 	VERSION=$buildoverride
