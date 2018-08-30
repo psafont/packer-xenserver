@@ -41,6 +41,7 @@ echo VERSION=$VERSION
 boxdir=$boxbasedir/tmp-$vagrantboxname
 
 xva=$vagrantboxname.$VERSION.xva
+fullxva=$vagrantboxname.full.$VERSION.xva
 boxfile=$vagrantboxname.$VERSION.box
 
 rm -rf $boxdir
@@ -49,6 +50,10 @@ packer build -only=xenserver-iso -var "artifactory=$artifactory" -var "branch=$b
 rm -rf packer_cache/*
 mkdir -p $resultdir/$vagrantboxname
 mv $boxdir/*.xva $resultdir/$vagrantboxname/$xva
+packer build -only=xenserver-iso -var "artifactory=$artifactory" -var "branch=$branch" -var "xshost=$server" -var "xspassword=$password" -var "outputdir=$boxdir" -var "version=$VERSION" -var "isoname=$isoname" internal/template.json
+rm -rf packer_cache/*
+mv $boxdir/*.xva $resultdir/$vagrantboxname/$fullxva
+
 echo "{\"provider\": \"xenserver\"}" > $boxdir/metadata.json
 cat > $boxdir/Vagrantfile << EOF
 Vagrant.configure(2) do |config|
