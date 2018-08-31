@@ -69,7 +69,7 @@ cd -
 rm -rf $boxdir
 
 pushd $resultdir/$vagrantboxname
-(ls -t|head -n 2;ls)|sort|uniq -u|xargs rm -f
+(ls -t|head -n 5;ls)|sort|uniq -u|xargs rm -f
 popd
 
 SHA=`sha1sum $resultdir/$vagrantboxname/$boxfile | cut -d\  -f1`
