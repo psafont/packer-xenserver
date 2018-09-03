@@ -5,7 +5,7 @@
 	<source type="local"></source>
 	<root-password>xenroot</root-password>
 	<admin-interface name="eth0" proto="dhcp" />
-	<timezone>Europe/London</timezone>
+	<timezone>UTC</timezone>
 	<time-config-method>ntp</time-config-method>
 	<ntp-server>0.uk.pool.ntp.org</ntp-server>
 	<ntp-server>1.uk.pool.ntp.org</ntp-server>
