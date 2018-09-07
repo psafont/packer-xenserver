@@ -17,6 +17,11 @@
         },
         {
             "type": "file",
+            "source": "scripts/veryfirstboot.service",
+            "destination": "/tmp/veryfirstboot.service"
+        },
+        {
+            "type": "file",
             "source": "scripts/chroot_script_base.sh",
             "destination": "/tmp/chroot_script_base.sh"
         },
