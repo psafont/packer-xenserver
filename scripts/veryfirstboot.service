@@ -1,0 +1,13 @@
+[Unit]
+Description=Set the control domain and installation uuids
+Before=xapi.service xenstored.service squeezed.service forkexecd.service
+ConditionPathExists=!/var/lib/xcp/veryfirst
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/etc/init.d/veryfirstboot start
+StandardError=null
+
+[Install]
+WantedBy=multi-user.target

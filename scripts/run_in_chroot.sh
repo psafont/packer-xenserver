@@ -13,8 +13,9 @@ cp /tmp/vagrant.pub /mnt/tmp/
 # Now run a script within the chroot
 chmod 755 /mnt/tmp/chroot_script*
 cp /tmp/veryfirstboot /mnt/etc/init.d/veryfirstboot
+cp /tmp/veryfirstboot.service /mnt/usr/lib/systemd/system/
+
 chmod 755 /mnt/etc/init.d/veryfirstboot
-ln -s ../init.d/veryfirstboot /mnt/etc/rc3.d/S03veryfirstboot
 for script in /mnt/tmp/chroot_script*; do
   script=`basename $script`
   chroot /mnt /tmp/$script

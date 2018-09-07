@@ -12,6 +12,8 @@ mv /tmp/vagrant.pub /home/vagrant/.ssh/authorized_keys
 chmod 0600 /home/vagrant/.ssh/authorized_keys
 chown -R vagrant /home/vagrant/.ssh
 
+systemctl enable veryfirstboot.service
+
 # Grant sudo rights
 echo "%wheel ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 sed -i -e "s/Defaults    requiretty/#Defaults    requiretty/g" /etc/sudoers
