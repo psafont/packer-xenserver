@@ -5,7 +5,7 @@ name=$1
 version=$2
 apikey=$3
 
-json=`curl -H "X-Atlas-Token: $apikey" https://app.vagrantup.com/api/v1/box/jonludlam/$name/version/$version`
+json=`curl -H "X-Atlas-Token: $apikey" https://app.vagrantup.com/api/v1/box/xenserver/$name/version/$version`
 vcversion=`echo $json | jq -r .version`
 
 if [ "0$version" == "0$vcversion" ]; then
