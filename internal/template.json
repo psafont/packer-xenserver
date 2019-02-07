@@ -94,7 +94,7 @@
                 "sshpassword=password atexit=shell --- /install.img<enter>"
             ],
             "boot_wait": "3s",
-            "disk_size": 512000,
+            "disk_size": 102400,
             "format":"xva",
             "http_directory": "http",
  	    "http_port_min": 2375,
