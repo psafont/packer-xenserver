@@ -32,7 +32,7 @@ fi
 exists=`jenkins/vagrantcloud-box-exists.sh $vagrantboxname 0.0.$VERSION $apikey`
 
 if [ $exists == "yes" ]; then
-   echo would normally exit 0 here
+   exit 0
 fi
 
 echo branch=$branch
@@ -89,10 +89,6 @@ cat > $resultdir/$vagrantboxname/$vagrantboxname.json <<EOF
   }]
 }
 EOF
-
-if [ $exists == "yes" ]; then
-   exit 0
-fi
 
 jenkins/create-vagrantcloud-box.sh $vagrantboxname $apikey
 jenkins/update-vagrantcloud-box.sh $vagrantboxname 0.0.$VERSION http://xen-git.uk.xensource.com/vagrant/$vagrantboxname/$boxfile $apikey
