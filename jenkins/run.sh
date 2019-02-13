@@ -18,10 +18,10 @@ export PATH=/local/bigdisc/packer-bin:$PATH
 boxbasedir=/usr/local/builds/vagrant
 resultdir=/local/bigdisc/vagrant
 
-escapedbranch=`echo $branch | sed sx/x%252Fxg`
-vagrantboxname=`echo $branch | sed sx/x-xg`
+escapedbranch=${branch//\//%252F}
+vagrantboxname=${branch//\//-}
 
-JVERSION=`curl "https://$bvtuser:$bvtpass@ratchet.do.citrite.net/job/xenserver-specs/job/$escapedbranch/api/json" | jq .lastSuccessfulBuild.number`
+JVERSION=$(curl "https://$bvtuser:$bvtpass@ratchet.do.citrite.net/job/xenserver-specs/job/$escapedbranch/api/json" | jq .lastSuccessfulBuild.number)
 
 if [ "x"$buildoverride != "x" ]; then
     VERSION=$buildoverride
@@ -29,7 +29,7 @@ else
     VERSION=$JVERSION
 fi
 
-exists=`jenkins/vagrantcloud-box-exists.sh $vagrantboxname 0.0.$VERSION $apikey`
+exists=$(jenkins/vagrantcloud-box-exists.sh $vagrantboxname 0.0.$VERSION $apikey)
 
 if [ $exists == "yes" ]; then
     exit 0
@@ -62,17 +62,15 @@ Vagrant.configure(2) do |config|
   end
 end
 EOF
-cd $boxdir
-tar zcf $resultdir/$vagrantboxname/$boxfile .
-cd -
 
+tar zcf $resultdir/$vagrantboxname/$boxfile -C $boxdir .
 rm -rf $boxdir
 
 pushd $resultdir/$vagrantboxname
 (ls -t|head -n 5;ls)|sort|uniq -u|xargs rm -f
 popd
 
-SHA=`sha1sum $resultdir/$vagrantboxname/$boxfile | cut -d\  -f1`
+SHA=$(sha1sum $resultdir/$vagrantboxname/$boxfile | cut -d\  -f1)
 
 cat > $resultdir/$vagrantboxname/$vagrantboxname.json <<EOF
 {
