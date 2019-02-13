@@ -13,5 +13,3 @@ if [ "0$version" == "0$vcversion" ]; then
 else
    echo "no"
 fi
-
-

@@ -24,15 +24,15 @@ vagrantboxname=`echo $branch | sed sx/x-xg`
 JVERSION=`curl "https://$bvtuser:$bvtpass@ratchet.do.citrite.net/job/xenserver-specs/job/$escapedbranch/api/json" | jq .lastSuccessfulBuild.number`
 
 if [ "x"$buildoverride != "x" ]; then
-	VERSION=$buildoverride
+    VERSION=$buildoverride
 else
-	VERSION=$JVERSION
+    VERSION=$JVERSION
 fi
 
 exists=`jenkins/vagrantcloud-box-exists.sh $vagrantboxname 0.0.$VERSION $apikey`
 
 if [ $exists == "yes" ]; then
-   exit 0
+    exit 0
 fi
 
 echo branch=$branch
@@ -92,5 +92,3 @@ EOF
 
 jenkins/create-vagrantcloud-box.sh $vagrantboxname $apikey
 jenkins/update-vagrantcloud-box.sh $vagrantboxname 0.0.$VERSION http://xen-git.uk.xensource.com/vagrant/$vagrantboxname/$boxfile $apikey
-
-
